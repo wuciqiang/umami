@@ -11,7 +11,7 @@ import { fetchWebsite } from '@/lib/load';
 import { parseRequest } from '@/lib/request';
 import { badRequest, forbidden, json, serverError } from '@/lib/response';
 import { anyObjectParam, urlOrPathParam } from '@/lib/schema';
-import { safeDecodeURI, safeDecodeURIComponent } from '@/lib/url';
+import { getLlmUtmDomain, safeDecodeURI, safeDecodeURIComponent } from '@/lib/url';
 import { createSession, saveEvent, saveSessionData, saveSessionLink, updateSession } from '@/queries/sql';
 
 interface Cache {
@@ -252,6 +252,11 @@ export async function POST(request: Request) {
         if (referrerDomain === eventDomain) {
           referrerDomain = undefined;
         }
+      }
+
+      // A visit from an AI assistant without a Referer keeps its source as the referrer domain
+      if (!referrer && utmSource) {
+        referrerDomain = getLlmUtmDomain(utmSource);
       }
 
       const eventType = linkId

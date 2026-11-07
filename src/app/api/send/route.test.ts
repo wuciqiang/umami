@@ -418,6 +418,24 @@ describe('event url and referrer parsing', () => {
     expect(arg.referrerDomain).toBeUndefined();
   });
 
+  test('takes the referrer domain from an AI assistant utm_source when there is no referrer', async () => {
+    const visit = (url: string, referrer?: string) =>
+      callPOST({
+        type: 'event',
+        payload: { website: WEBSITE_ID, hostname: 'example.com', url, referrer },
+      });
+
+    await visit('/?utm_source=chatgpt.com');
+    await visit('/?utm_source=Perplexity');
+    await visit('/?utm_source=chatgpt.com', 'https://www.google.com/');
+    await visit('/?utm_source=chatgpt.com', '/prev');
+    await visit('/?utm_source=newsletter');
+
+    expect(
+      saveEventMock.mock.calls.map(([arg]) => (arg as Record<string, any>).referrerDomain),
+    ).toEqual(['chatgpt.com', 'perplexity.ai', 'google.com', undefined, undefined]);
+  });
+
   test('saves referrer domain for a lookalike domain that only shares a prefix', async () => {
     await callPOST({
       type: 'event',

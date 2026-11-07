@@ -1,3 +1,5 @@
+import { LLM_UTM_SOURCES } from '@/lib/constants';
+
 export function getQueryString(params: object = {}): string {
   const searchParams = new URLSearchParams();
 
@@ -46,4 +48,13 @@ export function isValidUrl(url: string) {
   } catch {
     return false;
   }
+}
+
+export function getLlmUtmDomain(utmSource: string): string | undefined {
+  const source = utmSource
+    .trim()
+    .toLowerCase()
+    .replace(/^www\./, '');
+
+  return LLM_UTM_SOURCES.find(([pattern]) => pattern.test(source))?.[1];
 }

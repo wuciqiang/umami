@@ -368,6 +368,23 @@ export const LLM_DOMAINS = [
   'gemini.google.com',
   'meta.ai',
   'perplexity.ai',
+  'grok.com',
+  'chat.deepseek.com',
+  'kimi.com',
+];
+
+// AI assistants often open links without a Referer and only tag them with utm_source
+// (ChatGPT sends utm_source=chatgpt.com), so such a visit takes the assistant's domain.
+export const LLM_UTM_SOURCES: [RegExp, string][] = [
+  [/^(chatgpt|openai)(\.com)?$/, 'chatgpt.com'],
+  [/^perplexity(\.ai)?$/, 'perplexity.ai'],
+  [/^claude(\.ai)?$/, 'claude.ai'],
+  [/^(gemini(\.google\.com)?|bard)$/, 'gemini.google.com'],
+  [/^copilot(\.microsoft)?(\.com)?$/, 'copilot.microsoft.com'],
+  [/^meta\.ai$/, 'meta.ai'],
+  [/^grok(\.com)?$/, 'grok.com'],
+  [/^(chat\.)?deepseek(\.com)?$/, 'chat.deepseek.com'],
+  [/^(kimi|moonshot)(\.ai|\.com)?$/, 'kimi.com'],
 ];
 
 export const SHOPPING_DOMAINS = [
